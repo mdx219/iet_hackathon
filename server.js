@@ -24,7 +24,7 @@ app.post('/users', (req, res) => {
     })
     .then(() => res.sendStatus(201))
     .catch(error => {
-        if (error.error_type === 'servoces/chatkit/user_already_exists') {
+        if (error.error_type === 'services/chatkit/user_already_exists') {
             console.log(error.statusCode);
             res.sendStatus(200);
         } else {
@@ -33,12 +33,21 @@ app.post('/users', (req, res) => {
     });
 });
 
-app.post('/authenticate', (req, res) => {
-    const { grant_type } = req.body
-    res.json(chatkit.authenticate({ 
-        grant_type, 
-        userId: req.query.user_id 
-    }))
+app.post('/auth', (req, res) => {
+    // const { grant_type } = req.body
+    console.log(req.body)
+    // res.json(chatkit.authenticate({ 
+    //     grant_type, 
+    //     userId: req.query.user_id 
+    // }))
+
+    const authData = chatkit.authenticate({
+        userId: req.query.user_id
+    });
+
+    res.status(authData.status)
+        .send(authData.body);
+
     // const authData = chatkit.authenticate({ userId: req.query.user_id })
     // res.status(authData.status).send(authData.body)
 })
